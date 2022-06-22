@@ -10,6 +10,10 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -24,7 +28,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      // noteService.setToken(user.token)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -39,6 +43,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -53,6 +58,29 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleAddBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const blogObject = {
+        title: title,
+        author: author,
+        url: url
+      }
+      const res = await blogService.create(blogObject)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setBlogs(blogs.concat(res))
+
+    } catch (exception) {
+      setErrorMessage(exception)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
   }
 
   const loginForm = () => {
@@ -79,7 +107,41 @@ const App = () => {
         <button type="submit">login</button>
       </form>  
     )
+  }
 
+  const addBlogForm = () => {
+    return (
+      <form onSubmit={handleAddBlog}>
+      <div>
+        title
+          <input
+          type="text"
+          value={title}
+          name="Title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        author
+          <input
+          type="text"
+          value={author}
+          name="Author"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        url
+          <input
+          type="text"
+          value={url}
+          name="URL"
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+    )
   }
 
   // choose the react jsx code to render  based on user
@@ -102,6 +164,10 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </p>
       </div>
+      <h2>create new blog</h2>
+      {addBlogForm()}
+
+      <h3>All Blogs</h3>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
