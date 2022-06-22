@@ -17,6 +17,17 @@ const App = () => {
     )  
   }, [])
 
+  // use effect hook to get the stored user if not null
+  // when set user, we auto 'log in' by setting user
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      // noteService.setToken(user.token)
+    }
+  }, [])
+
   // need to make it async because we use await
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -25,6 +36,9 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
       setUser(user)
       setUsername('')
       setPassword('')
@@ -34,6 +48,11 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   const loginForm = () => {
@@ -78,7 +97,10 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={errorMessage} />
       <div>
-        <p>{user.name} is logged in!</p>
+        <p>
+          {user.name} is logged in!
+          <button onClick={handleLogout}>logout</button>
+        </p>
       </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
