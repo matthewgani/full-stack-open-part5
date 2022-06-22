@@ -48,7 +48,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage(exception.response.data.error)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -69,13 +69,23 @@ const App = () => {
         url: url
       }
       const res = await blogService.create(blogObject)
+
+      // we can add empty string title/url but this wont show
+      // in the react app due to how blog component is
+      // if we want to make it invalid for getting exception, 
+      // we nee to set the fields to null if they are empty strings
+
+      setErrorMessage(`A new blog: '${title}' by ${author} was added!`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
       setTitle('')
       setAuthor('')
       setUrl('')
       setBlogs(blogs.concat(res))
 
     } catch (exception) {
-      setErrorMessage(exception)
+      setErrorMessage(exception.response.data.error)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -149,6 +159,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={errorMessage} />
         {loginForm()}
       </div>
     )
