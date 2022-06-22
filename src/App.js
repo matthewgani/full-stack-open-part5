@@ -49,6 +49,8 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       setErrorMessage(exception.response.data.error)
+      setUsername('')
+      setPassword('')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
