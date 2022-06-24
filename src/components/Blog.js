@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const Blog = ({username, blog, handleLike, handleDelete}) => {
+const Blog = ({ username, blog, handleLike, handleDelete }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const blogStyle = {
@@ -28,26 +28,23 @@ const Blog = ({username, blog, handleLike, handleDelete}) => {
       )
     }
   }
-
-
-  
   if (showDetails) {
     return (
       <div style={blogStyle}>
-        '{blog.title}', author: {blog.author} <button onClick={toggleDetails}>hide</button>
+        &apos;{blog.title}&apos;, author: {blog.author} <button onClick={toggleDetails}>hide</button>
         <p>url: {blog.url}</p>
         <p>likes: {blog.likes} <button onClick={handleLike}>like</button></p>
         <p>creator name: {blog.user.name}</p>
         <p>creator username: {blog.user.username}</p>
         {showRemoveButton()}
-      </div> 
+      </div>
     )
   }
 
   return (
     <div style={blogStyle}>
-      '{blog.title}' author: {blog.author} <button onClick={toggleDetails}>show</button>
-    </div> 
+      &apos;{blog.title}&apos; author: {blog.author} <button onClick={toggleDetails}>show</button>
+    </div>
   )
 }
 

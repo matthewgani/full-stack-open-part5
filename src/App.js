@@ -1,4 +1,4 @@
-import { useState, useEffect , useRef} from 'react'
+import { useState, useEffect , useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,7 +10,7 @@ import LoginForm from './components/LoginForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('') 
+  const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [title, setTitle] = useState('')
@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
 
 
@@ -40,7 +40,6 @@ const App = () => {
   // need to make it async because we use await
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
@@ -80,7 +79,7 @@ const App = () => {
 
       // we can add empty string title/url but this wont show
       // in the react app due to how blog component is
-      // if we want to make it invalid for getting exception, 
+      // if we want to make it invalid for getting exception,
       // we nee to set the fields to null if they are empty strings
 
       setErrorMessage(`A new blog: '${title}' by ${author} was added!`)
@@ -103,13 +102,13 @@ const App = () => {
   }
   const handleLike = async (blog) => {
     try {
-      const updatedBlog = {...blog, likes: blog.likes + 1}
+      const updatedBlog = { ...blog, likes: blog.likes + 1 }
 
       await blogService.updateLikes(updatedBlog)
 
       // update the blogs state to re render blog component
-      setBlogs(blogs.map(b=> b.id !== blog.id ? b : updatedBlog))
-      setErrorMessage(`Liked a blog post!`)
+      setBlogs(blogs.map(b => b.id !== blog.id ? b : updatedBlog))
+      setErrorMessage('Liked a blog post!')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -128,7 +127,7 @@ const App = () => {
       await blogService.deleteBlog(blog.id)
       // update the blogs state to re render blog component
       setBlogs(blogs.filter(b => b.id !== blog.id))
-      setErrorMessage(`Deleted a blog post!`)
+      setErrorMessage('Deleted a blog post!')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -140,7 +139,7 @@ const App = () => {
     }
   }
   // choose the react jsx code to render  based on user
-  if (user == null) {
+  if (user === null) {
     return (
       <div>
         <h2>Blog App</h2>
@@ -149,10 +148,10 @@ const App = () => {
           <LoginForm
             username = {username}
             password = {password}
-            handlePasswordChange = {({target}) => setPassword(target.value)}
-            handleUsernameChange = {({target}) => setUsername(target.value)}
+            handlePasswordChange = {({ target }) => setPassword(target.value)}
+            handleUsernameChange = {({ target }) => setUsername(target.value)}
             handleSubmit = {handleLogin}
-            />
+          />
         </Togglable>
       </div>
     )
@@ -169,13 +168,13 @@ const App = () => {
         </p>
       </div>
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <BlogForm 
+        <BlogForm
           title= {title}
           author= {author}
           url = {url}
-          handleTitleChange={({target}) => setTitle(target.value)}
-          handleAuthorChange={({target}) => setAuthor(target.value)}
-          handleUrlChange={({target}) => setUrl(target.value)}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          handleUrlChange={({ target }) => setUrl(target.value)}
           handleSubmit={handleAddBlog}
         />
       </Togglable>
@@ -184,7 +183,7 @@ const App = () => {
       {blogs.sort(function (a, b) {
         return b.likes - a.likes
       }).map((blog =>
-        <Blog key={blog.id} username={user.username} blog={blog} handleLike={()=> handleLike(blog)} handleDelete={()=>handleDelete(blog)} />
+        <Blog key={blog.id} username={user.username} blog={blog} handleLike={() => handleLike(blog)} handleDelete={() => handleDelete(blog)} />
       ))}
     </div>
   )
