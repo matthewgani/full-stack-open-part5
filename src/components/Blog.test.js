@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('<Blog />', () => {
   // let container
+  let mockLikeHandler
   beforeEach(() => {
 
     const blog = {
@@ -19,9 +20,10 @@ describe('<Blog />', () => {
         id: '62b02617b26b65f0d07609ef'
       }
     }
+    mockLikeHandler = jest.fn()
 
     // container = render(<Blog blog={blog}/>).container
-    render(<Blog blog={blog}/>)
+    render(<Blog blog={blog} handleLike={mockLikeHandler}/>)
   })
 
   test('renders intro content only', () => {
@@ -55,8 +57,24 @@ describe('<Blog />', () => {
     const url = screen.queryByText('url: www.website.com')
     expect(url).toBeDefined()
 
-    const likes = screen.queryByText('likes: 23', { exact:false })
+    const likes = screen.queryByText('likes: 23')
     expect(likes).toBeDefined()
+  })
+
+  test('like is pressed twice', async () => {
+
+    const user = userEvent.setup()
+    const button = screen.getByText('show')
+    await user.click(button)
+
+
+    const likeButton = screen.getByText('like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockLikeHandler.mock.calls).toHaveLength(2)
+
+    // likes does not increase to 25 because we use mock like handler
   })
 
 })
