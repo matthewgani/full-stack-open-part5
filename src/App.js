@@ -20,9 +20,11 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )  
   }, [])
+
+
 
   // use effect hook to get the stored user if not null
   // when set user, we auto 'log in' by setting user
@@ -161,11 +163,17 @@ const App = () => {
       </Togglable>
 
       <h3>All Blogs</h3>
-      {blogs.map(blog =>
+      {blogs.sort(function (a, b) {
+        return b.likes - a.likes
+      }).map((blog =>
         <Blog key={blog.id} blog={blog} handleLike={()=> handleLike(blog)} />
-      )}
+      ))}
     </div>
   )
 }
+
+// blog sort
+// if b > a, we return positive value, which sorts a after b
+// so the b value with higher likes is put first
 
 export default App
