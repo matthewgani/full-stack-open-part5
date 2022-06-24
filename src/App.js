@@ -120,7 +120,25 @@ const App = () => {
       }, 5000)
     }
   }
-
+  const handleDelete = async (blog) => {
+    try {
+      if (!window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+        return
+      }
+      await blogService.deleteBlog(blog.id)
+      // update the blogs state to re render blog component
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      setErrorMessage(`Deleted a blog post!`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }catch (exception) {
+      setErrorMessage(exception.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
   // choose the react jsx code to render  based on user
   if (user == null) {
     return (
@@ -146,7 +164,7 @@ const App = () => {
       <Notification message={errorMessage} />
       <div>
         <p>
-          {user.name} is logged in!
+          {user.name}(username: {user.username}) is logged in!
           <button onClick={handleLogout}>logout</button>
         </p>
       </div>
@@ -162,11 +180,11 @@ const App = () => {
         />
       </Togglable>
 
-      <h3>All Blogs</h3>
+      <h3>All Blogs(sorted by likes)</h3>
       {blogs.sort(function (a, b) {
         return b.likes - a.likes
       }).map((blog =>
-        <Blog key={blog.id} blog={blog} handleLike={()=> handleLike(blog)} />
+        <Blog key={blog.id} username={user.username} blog={blog} handleLike={()=> handleLike(blog)} handleDelete={()=>handleDelete(blog)} />
       ))}
     </div>
   )
