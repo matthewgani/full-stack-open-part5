@@ -46,7 +46,7 @@ const Blog = ({username, blog, handleLike, handleDelete}) => {
 
   return (
     <div style={blogStyle}>
-      '{blog.title}' by: {blog.author} <button onClick={toggleDetails}>show</button>
+      '{blog.title}' author: {blog.author} <button onClick={toggleDetails}>show</button>
     </div> 
   )
 }
