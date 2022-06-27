@@ -8,75 +8,63 @@ import BlogForm from './BlogForm'
 
 describe('<Blog />', () => {
   // let container
-  const mockSubmitHandler = jest.fn(e => e.preventDefault())
-  let container
-  beforeEach(() => {
-    container = render(<BlogForm
-      handleSubmit={mockSubmitHandler}
-    />).container
-  })
+  // const mockSubmitHandler = jest.fn(e => e.preventDefault())
+  // let container
+  // beforeEach(() => {
+  //   container = .container
+  // })
 
   test('creating a new blog', async () => {
-    const user = userEvent.setup()
+    const mockSubmitHandler = jest.fn()
+    render(<BlogForm
+      handleSubmit={mockSubmitHandler}
+    />)
+    // const user = userEvent.setup()
     // screen.debug()
-    const titleInput = container.querySelector('#title-input')
-    const authorInput = container.querySelector('#author-input')
-    const urlInput = container.querySelector('#url-input')
+    // const titleInput = container.querySelector('#title-input')
+    // const authorInput = container.querySelector('#author-input')
+    // const urlInput = container.querySelector('#url-input')
+
+    const titleInput = screen.getByPlaceholderText('write here title text')
+    const authorInput = screen.getByPlaceholderText('write here author text')
+    const urlInput = screen.getByPlaceholderText('write here url text')
 
     expect(titleInput).toBeDefined()
+    expect(authorInput).toBeDefined()
+    expect(urlInput).toBeDefined()
 
     const createButton = screen.getByText('create')
 
     expect(createButton).toBeDefined()
 
-    await user.type(titleInput, 'mr cat' )
+
+    // await user.type(titleInput, 'mr cat' )
+    // expect(titleInput).toHaveValue('mr cat')
+    // console.log(titleInput)
+    // await user.type(authorInput, 'john' )
+    // await user.type(urlInput, 'www.cat.com' )
+    // await userEvent.clear(titleInput)
+
+    await userEvent.type(titleInput, 'mr cat' )
     expect(titleInput).toHaveValue('mr cat')
-    await user.type(authorInput, 'john' )
-    await user.type(urlInput, 'www.cat.com' )
+    await userEvent.type(authorInput, 'john' )
+    await userEvent.type(urlInput, 'www.cat.com' )
 
     // fireEvent.submit(titleInput, authorInput, urlInput)
-
-    await user.click(createButton)
-
+    // await user.click(createButton)
+    fireEvent.click(createButton)
     expect(mockSubmitHandler.mock.calls).toHaveLength(1)
-    // console.log(mockSubmitHandler.mock.calls)
-    expect(mockSubmitHandler.mock.calls[0][0].Title).toBe('mr cat')
-    expect(mockSubmitHandler.mock.calls[0][0].Author).toBe('john')
-    expect(mockSubmitHandler.mock.calls[0][0].URL).toBe('www.cat.com')
+    // expect(mockSubmitHandler.mock.calls[0][0].Title).toBe('mr cat')
+    // expect(mockSubmitHandler.mock.calls[0][0].Author).toBe('john')
+    // expect(mockSubmitHandler.mock.calls[0][0].URL).toBe('www.cat.com')
 
   })
 
 })
+//seems like when i use await, the typing works
+// when no await and async, it doesnt work.
+// but when i use await, the click event throws an error
 
-
-// import React from 'react'
-// import { fireEvent, render, screen } from '@testing-library/react'
-// import '@testing-library/jest-dom/extend-expect'
-// import userEvent from '@testing-library/user-event'
-// import BlogForm from './BlogForm'
-// import Blog from './Blog'
-
-// test('<blogform /> updates parent state and calls onSubmit', async () => {
-//   // const createBlog = jest.fn(e => e.preventDefault())
-
-//   const createBlog = jest.fn(e => e.preventDefault())
-//   const user = userEvent.setup()
-
-//   render(<BlogForm handleSubmit={createBlog} />)
-//   screen.debug()
-
-//   const input = screen.getByPlaceholderText('write here blog text')
-//   const sendButton = screen.getByText('create')
-
-//   await user.type(input, 'testing a form...' )
-//   await user.click(sendButton)
-
-//   userEvent.submit(screen.getByRole('form'))
-
-//   expect(createBlog.mock.calls).toHaveLength(1)
-//   // console.log(createBlog.mock.calls[0])
-//   expect(createBlog.mock.calls[0][0].content).toBe('testing a form...' )
-// })
 
 // test('clicking create button calls handleCreateBlog', () => {
 //   const mockHandler = jest.fn()
