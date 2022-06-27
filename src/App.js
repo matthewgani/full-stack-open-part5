@@ -13,10 +13,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -66,15 +62,10 @@ const App = () => {
     setUser(null)
   }
   const blogFormRef = useRef()
-  const handleAddBlog = async (event) => {
-    event.preventDefault()
+  const handleAddBlog = async (blogObject) => {
+    // event.preventDefault()
     try {
       blogFormRef.current.toggleVisibility()
-      const blogObject = {
-        title: title,
-        author: author,
-        url: url
-      }
       const res = await blogService.create(blogObject)
 
       // we can add empty string title/url but this wont show
@@ -82,14 +73,10 @@ const App = () => {
       // if we want to make it invalid for getting exception,
       // we nee to set the fields to null if they are empty strings
 
-      setErrorMessage(`A new blog: '${title}' by ${author} was added!`)
+      setErrorMessage(`A new blog: '${blogObject.title}' by ${blogObject.author} was added!`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setBlogs(blogs.concat(res))
 
     } catch (exception) {
@@ -169,12 +156,7 @@ const App = () => {
       </div>
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <BlogForm
-          title= {title}
-          author= {author}
-          url = {url}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
+          user = {user}
           handleSubmit={handleAddBlog}
         />
       </Togglable>
